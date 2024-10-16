@@ -1,0 +1,47 @@
+@startuml
+class Estudiante {
+    +id: int <<PK>>
+    +nombre: String
+    +curso_id: int <<FK>> // Curso al que está inscrito
+}
+
+class Curso {
+    +id: int <<PK>>
+    +nombre: String
+}
+
+class Evaluacion {
+    +id: int <<PK>>
+    +fecha: Date
+    +calificacion: float
+    +curso_id: int <<FK>>
+}
+
+class Pregunta {
+    +id: int <<PK>>
+    +pregunta_texto: String // texto de la pregunta
+    +tipo: String // tipo de pregunta (ej. Sencilla, Múltiple, Abierta)
+}
+
+class Evaluacion_Pregunta {
+    +id: int <<PK>>
+    +evaluacion_id: int <<FK>>
+    +pregunta_id: int <<FK>>
+}
+
+class Respuesta {
+    +id: int <<PK>>
+    +respuesta_texto: String // texto de la respuesta
+    +es_correcta: boolean
+    +estudiante_id: int <<FK>>
+    +pregunta_id: int <<FK>>
+}
+
+Estudiante "1" -- "1" Curso : Inscrito
+Curso "1" -- "*" Evaluacion : Tiene
+Evaluacion "1" -- "*" Evaluacion_Pregunta : Contiene
+Evaluacion_Pregunta "*" -- "1" Pregunta : Es para
+Pregunta "1" -- "*" Respuesta : Tiene
+Respuesta "*" -- "1" Estudiante : Es proporcionada por
+Respuesta "*" -- "1" Pregunta : Es para
+@enduml
