@@ -1,0 +1,23 @@
+{# templates/contacto/gracias.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Gracias{% endblock %}
+
+{% block body %}
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card text-center shadow">
+                <div class="card-header bg-success text-white">
+                    <h4>¡Gracias por Contactarnos!</h4>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Mensaje Enviado con Éxito</h5>
+                    <p class="card-text">
+                        Hemos recibido tu mensaje, el área encargada se contactará pronto.
+                    </p>
+                    <a href="{{ path('contacto') }}" class="btn btn-primary mt-3">Volver al Formulario</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

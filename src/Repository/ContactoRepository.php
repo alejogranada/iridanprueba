@@ -15,29 +15,17 @@ class ContactoRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Contacto::class);
     }
-
-    //    /**
-    //     * @return Contacto[] Returns an array of Contacto objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('c.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?Contacto
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+	
+	public function existsToday($email)
+    {
+        $qb = $this->createQueryBuilder('c')
+            ->where('c.fecha_envio >= :startOfDay')
+            ->andWhere('c.fecha_envio <= :endOfDay')
+            ->andWhere('c.correo = :email')
+            ->setParameter('startOfDay', new \DateTime('today'))
+            ->setParameter('endOfDay', new \DateTime('tomorrow'))
+            ->setParameter('email', $email);
+		
+        return count($qb->getQuery()->getResult()) > 0;	
+    }
 }

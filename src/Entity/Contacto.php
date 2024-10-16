@@ -5,8 +5,10 @@ namespace App\Entity;
 use App\Repository\ContactoRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
-#[ORM\Entity(repositoryClass: ContactoRepository::class)]
+#[ORM\Entity(repositoryClass: ContactoRepository::class)] 
+#[UnMensajePorDia]
 class Contacto
 {
     #[ORM\Id]
@@ -20,18 +22,31 @@ class Contacto
     #[ORM\Column(length: 100)]
     private ?string $apellido = null;
 
-    #[ORM\Column(length: 180)]
-    private ?string $correo = null;
+    #[ORM\Column(type: 'string', length: 180)]
+    #[Assert\NotBlank]
+    #[Assert\Email]
+    #[UnMensajePorDia]
+    private $correo;
 
-    #[ORM\Column(length: 15)]
-    private ?string $celular = null;
+    #[ORM\Column(type: 'string', length: 15)]
+    #[Assert\NotBlank]
+    #[Assert\Regex(
+        pattern: "/^\d{10,15}$/",
+        message: "El celular debe contener entre 10 y 15 dígitos."
+    )]
+    private $celular;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(targetEntity: AreaContacto::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private ?AreaContacto $area = null;
+    #[Assert\NotNull]
+    private $area;
 
-    #[ORM\Column(type: Types::TEXT)]
-    private ?string $mensaje = null;
+    #[ORM\Column(type: 'text')]
+    #[Assert\NotBlank]
+    private $mensaje;
+	
+	#[ORM\Column(type: 'datetime')]
+    private $fecha_envio;
 
     public function getId(): ?int
     {
@@ -106,6 +121,18 @@ class Contacto
     public function setMensaje(string $mensaje): static
     {
         $this->mensaje = $mensaje;
+
+        return $this;
+    }
+	
+	public function getFechaEnvio(): ?\DateTimeInterface
+    {
+        return $this->fecha_envio;
+    }
+
+    public function setFechaEnvio(\DateTimeInterface $fecha_envio): self
+    {
+        $this->fecha_envio = $fecha_envio;
 
         return $this;
     }
