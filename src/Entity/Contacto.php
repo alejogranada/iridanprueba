@@ -8,7 +8,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ContactoRepository::class)] 
-#[UnMensajePorDia]
 class Contacto
 {
     #[ORM\Id]
@@ -25,7 +24,6 @@ class Contacto
     #[ORM\Column(type: 'string', length: 180)]
     #[Assert\NotBlank]
     #[Assert\Email]
-    #[UnMensajePorDia]
     private $correo;
 
     #[ORM\Column(type: 'string', length: 15)]

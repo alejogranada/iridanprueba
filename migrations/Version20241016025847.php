@@ -20,7 +20,7 @@ final class Version20241016025847 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // Agregar la columna fecha_envio como nullable inicialmente
-        $this->addSql("ALTER TABLE contacto ADD fecha_envio DATETIME DEFAULT NULL");
+        //$this->addSql("ALTER TABLE contacto ADD fecha_envio DATETIME DEFAULT NULL");
     }
 
     public function down(Schema $schema): void
