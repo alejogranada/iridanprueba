@@ -4,6 +4,7 @@
 namespace App\Controller;
 
 use App\Entity\Contacto;
+use App\Entity\AreaContacto;
 use App\Form\ContactoType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,28 +23,37 @@ class ContactoController extends AbstractController
     }
 
     #[Route('/contacto', name: 'contacto')]
-    public function nuevoContacto(Request $request, EntityManagerInterface $entityManager): Response
+    public function nuevoContacto(Request $request): Response
     {
         $contacto = new Contacto();
         $form = $this->createForm(ContactoType::class, $contacto);
 
+        // Obtener áreas de contacto
+        $areas = $this->entityManager->getRepository(AreaContacto::class)->findAll();
+
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {		
-			$correo = $contacto->getCorreo();
-            $repository = $entityManager->getRepository(Contacto::class);
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Obtén las áreas seleccionadas desde el formulario
+            $selectedAreas = $contacto->getAreas();
+            foreach ($selectedAreas as $area) {
+                $contacto->addArea($area);
+            }
+
+            $correo = $contacto->getCorreo();
+            $repository = $this->entityManager->getRepository(Contacto::class);
 
             if ($repository->existsToday($correo)) {
                 $this->addFlash('error', 'Ya has enviado un mensaje hoy.');
-				
-				return $this->render('contacto/nuevo.html.twig', [
-					'form' => $form->createView(),
-				]);
+
+                return $this->render('contacto/nuevo.html.twig', [
+                    'form' => $form->createView(),
+                ]);
             }
-			
+
 			// Si pasa la validación, guarda el contacto			
 			// Actualiza la fecha de envío al momento actual
-            $contacto->setFechaEnvio(new \DateTime());						
+            $contacto->setFechaEnvio(new \DateTime());
             // Persistir la entidad Contacto en la base de datos
             $this->entityManager->persist($contacto);
             $this->entityManager->flush();
@@ -54,6 +64,7 @@ class ContactoController extends AbstractController
 
         return $this->render('contacto/nuevo.html.twig', [
             'form' => $form->createView(),
+            'areas' => $areas // Pasar áreas al twig
         ]);
     }
 	

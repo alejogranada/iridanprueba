@@ -35,9 +35,18 @@
                 {{ form_errors(form.celular) }}
             </div>
             <div class="mb-3">
-                {{ form_label(form.area) }}:
-                {{ form_widget(form.area, {'attr': {'class': 'form-select'}}) }}
-                {{ form_errors(form.area) }}
+                <label for="areas">Área de Contacto:</label>
+                <div class="row">
+                    {% for area in form.areas %}
+                        <div class="col-4">  {# Columna de 4 para 3 elementos en una fila #}
+                            <div class="form-check">
+                                {{ form_widget(area) }}
+                                {{ form_label(area) }}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                {{ form_errors(form.areas) }}
             </div>
             <div class="mb-3">
                 {{ form_label(form.mensaje) }}:

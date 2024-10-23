@@ -20,6 +20,6 @@ final class Version20241016024929 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE contacto ADD fecha_envio DATETIME NOT NULL');
+        //$this->addSql('ALTER TABLE contacto ADD fecha_envio DATETIME NOT NULL');
     }
 }

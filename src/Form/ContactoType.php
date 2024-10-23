@@ -33,11 +33,14 @@ class ContactoType extends AbstractType
                 'label' => 'Celular',
                 'attr' => ['maxlength' => 15],
             ])
-            ->add('area', EntityType::class, [
-                'class' => AreaContacto::class,
-                'choice_label' => 'nombre',
-                'label' => 'Área de Contacto',
-                'placeholder' => 'Selecciona un área',
+            ->add('areas', EntityType::class, [
+                'class' => AreaContacto::class,   // Entidad de donde se extraerán los datos
+                'choice_label' => 'nombre',       // Campo de la entidad que será visible
+                'multiple' => true,               // Permitir selección múltiple
+                'expanded' => true,              // False para mantener como dropdown (select)
+                'required' => true,               // Campo obligatorio
+                'placeholder' => 'Selecciona un área', // Texto placeholder
+                'attr' => ['class' => 'form-check-input'],  // Clases de Bootstrap
             ])
             ->add('mensaje', TextareaType::class, [
                 'label' => 'Mensaje',

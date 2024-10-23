@@ -3,11 +3,12 @@
 namespace App\Entity;
 
 use App\Repository\ContactoRepository;
-use Doctrine\DBAL\Types\Types;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[ORM\Entity(repositoryClass: ContactoRepository::class)] 
+#[ORM\Entity(repositoryClass: ContactoRepository::class)]
 class Contacto
 {
     #[ORM\Id]
@@ -34,17 +35,21 @@ class Contacto
     )]
     private $celular;
 
-    #[ORM\ManyToOne(targetEntity: AreaContacto::class)]
-    #[ORM\JoinColumn(nullable: false)]
-    #[Assert\NotNull]
-    private $area;
+    #[ORM\ManyToMany(targetEntity: AreaContacto::class)]
+    #[ORM\JoinTable(name: 'contacto_area')]
+    private Collection $areas; // Relación con AreaContacto
 
     #[ORM\Column(type: 'text')]
     #[Assert\NotBlank]
     private $mensaje;
-	
-	#[ORM\Column(type: 'datetime')]
+    
+    #[ORM\Column(type: 'datetime')]
     private $fecha_envio;
+
+    public function __construct()
+    {
+        $this->areas = new ArrayCollection(); // Inicializar la colección de áreas
+    }
 
     public function getId(): ?int
     {
@@ -99,15 +104,24 @@ class Contacto
         return $this;
     }
 
-    public function getArea(): ?AreaContacto
+    /**
+     * @return Collection|AreaContacto[]
+     */
+    public function getAreas(): Collection
     {
-        return $this->area;
+        return $this->areas;
+    }
+    public function addArea(AreaContacto $area): static
+    {
+        if (!$this->areas->contains($area)) {
+            $this->areas->add($area);
+        }
+        return $this;
     }
 
-    public function setArea(?AreaContacto $area): static
+    public function removeArea(AreaContacto $area): static
     {
-        $this->area = $area;
-
+        $this->areas->removeElement($area);
         return $this;
     }
 
@@ -122,8 +136,8 @@ class Contacto
 
         return $this;
     }
-	
-	public function getFechaEnvio(): ?\DateTimeInterface
+    
+    public function getFechaEnvio(): ?\DateTimeInterface
     {
         return $this->fecha_envio;
     }
